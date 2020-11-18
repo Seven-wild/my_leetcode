@@ -7,6 +7,9 @@ public:
             while (!s.empty() && heights[current] < heights[s.top()]) {
                 int height = heights[s.top()];
                 s.pop();
+                while (!s.empty() && heights[s.top()] == height) {
+                    s.pop();
+                }
                 int width = current;
                 if (!s.empty()) {
                     width = current - s.top() - 1;
