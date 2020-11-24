@@ -1,39 +1,39 @@
 class Solution {
 public:
-    vector<vector<int>> weights;
-    void init_weights(vector<string> &strs) {
-        for (int i = 0; i < strs.size(); i++) {
-            int one = 0, zero = 0;
-            for (int j = 0; j < strs[i].length(); j++) {
-                if (strs[i][j] == '0') zero++;
-                else one++;
-            }
-            weights.push_back({zero, one});
-        }
-    }
-    int findMaxForm(vector<string>& strs, int m, int n) {
-        init_weights(strs);
-        /***************滚动数组优化**************
-        for (int i = 1; i <= strs.size(); i++) {
-            for (int j = 0; j <= m; j++) {
-                for (int k = 0; k <= n; k++) {
-                    dp[i][j][k] = dp[i - 1][j][k];
-                    if (j >= weights[i - 1][0] && k >= weights[i - 1][1]) {
-                        dp[i][j][k] = max(dp[i - 1][j][k], dp[i - 1][j - weights[i - 1][0]][k - weights[i - 1][1]] + 1);
-                    }
+    int lengthOfLIS(vector<int>& nums) {
+        /***********朴素DP*************
+        if (nums.size() == 0) return 0;
+        int ans = 1;
+        vector<int> dp(nums.size());
+        dp[0] = 1;
+        for (int i = 1; i < nums.size(); i++) {
+            dp[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = max(dp[i], dp[j] + 1);
                 }
             }
+            ans = max(ans, dp[i]);
         }
-        return dp[strs.size()][m][n];        
-        ***********************************/
-        vector<vector<int>> dp(m + 1, vector<int>(n +  1));
-        for (int i = 0; i < strs.size(); i++) {
-            for (int j = m; j >= weights[i][0]; j--) {
-                for (int k = n; k >= weights[i][1]; k--) {
-                    dp[j][k] = max(1 + dp[j - weights[i][0]][k - weights[i][1]], dp[j][k]);
+        return ans;
+        *******************************/
+        // 贪心 + 二分
+        vector<int> ans;
+        ans.push_back(nums[0]);
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] > ans[ans.size() - 1]) {
+                ans.push_back(nums[i]);
+            } else {
+                int l = 0, r = ans.size() - 1, mid;
+                while (l < r) {
+                    mid = (l + r) >> 1;
+                    if (ans[mid] >= nums[i]) r = mid;
+                    else l = mid + 1;
                 }
+                ans[l] = nums[i];
+
             }
         }
-        return dp[m][n];
+        return ans.size();
     }
 };
