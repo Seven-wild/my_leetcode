@@ -7,7 +7,7 @@ public:
         }
         int n = 0;
         for (auto cnt : remain) {
-            if (cnt > -1) {
+            if (cnt != -1) {
                 n++;
             }
         }
