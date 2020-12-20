@@ -11,27 +11,25 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode *prehead = new ListNode(-1);
-        ListNode *current = prehead;
-        int flag = 0;
-        while (l1 != nullptr || l2!=nullptr) {
+        ListNode *p = l1, *q = l2;
+        //虚拟头节点
+        ListNode *prehead = new ListNode();
+        ListNode *curr = prehead;
+        //进位
+        int carry = 0;
+        while (p || q) {
             int sum = 0;
-            if (l1 != nullptr) {
-                sum += l1->val;
-                l1 = l1->next;
-            }
-            if (l2 != nullptr) {
-                sum += l2->val;
-                l2 = l2->next;
-            }
-            sum += flag;
-            flag = sum / 10;
+            if (p) sum += p->val, p = p->next;
+            if (q) sum += q->val, q = q->next;
+            sum += carry;
+            carry = sum / 10;
             sum %= 10;
-            current->next = new ListNode(sum);
-            current = current->next;
+            curr->next = new ListNode(sum); 
+            curr = curr->next;
         }
-        if (flag == 1) {
-            current->next =new ListNode(1);
+        //循环结束进位不为0
+        if (carry) {
+            curr->next = new ListNode(carry);
         }
         return prehead->next;
     }
