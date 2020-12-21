@@ -10,37 +10,39 @@
  */
 class Solution {
 public:
-    pair<ListNode*, ListNode*> myReverse(ListNode *head, ListNode* tail) {
-        ListNode *prev = tail->next, *p = head;
-        while (prev != tail) {
-            ListNode *nex = p->next;
-            p->next = prev;
-            prev = p;
-            p = nex;
+    // 翻转k个节点
+    pair<ListNode *, ListNode *> myReverse(ListNode *head, ListNode *last) {
+        ListNode *prev = last->next, *curr = head;
+        while (prev != last) {
+            ListNode *nex = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = nex;
         }
-        return {tail, head};
+        return {last, head};
     }
     ListNode* reverseKGroup(ListNode* head, int k) {
-        ListNode *hair = new ListNode(0);
-        hair->next = head;
-        ListNode *pre = hair;
-
+        // 虚拟头节点
+        ListNode *prehead = new ListNode(0, head);
+        // hair tail是需要翻转的k个节点的前一个和后一个节点
+        // last 是需要翻转的k个节点的最后一个节点
+        ListNode *hair = prehead, * tail, *last;
         while (head) {
-            ListNode *tail = pre;
-
+            last = hair;
             for (int i = 0; i < k; i++) {
-                tail = tail->next;
-                if (!tail) {
-                    return hair->next;
-                }
+                last = last->next;
+                //如果剩余节点不足k个 直接返回
+                if (!last) return prehead->next;
             }
-            ListNode *nex = tail->next;
-            tie(head, tail) = myReverse(head, tail);
-            pre->next = head;
-            tail->next = nex;
-            pre = tail;
-            head = tail->next;  
+            tail = last->next;
+            auto temp = myReverse(head, last);
+            head = temp.first;
+            last = temp.second;
+            hair->next = head;
+            last->next = tail;
+            hair = last;
+            head = hair->next;
         }
-        return hair->next;
+        return prehead->next;
     }
 };
