@@ -11,16 +11,19 @@
 class Solution {
 public:
     ListNode* swapPairs(ListNode* head) {
-        ListNode *prehead = new ListNode(-1,head);
-        ListNode *current = prehead;
+        // 虚拟头节点
+        ListNode *prehead = new ListNode(0, head);
+        // 需要交换的两个节点的前一个节点
+        ListNode *hair = prehead;
+        // 交换的第一个节点和第二个节点
         ListNode *first, *second;
-        while (current->next != nullptr && current->next->next != nullptr) {
-            first = current->next;
+        while (hair->next && hair->next->next) {
+            first = hair->next;
             second = first->next;
-            current->next = second;
+            hair->next = second;
             first->next = second->next;
             second->next = first;
-            current = first;
+            hair = first;
         }
         return prehead->next;
     }
